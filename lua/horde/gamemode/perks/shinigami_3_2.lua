@@ -1,5 +1,5 @@
 PERK.PrintName = "Memento Mori"
-PERK.Description = "Enter a rage mode. While active, gain 50% crit chance and crits builds up Freeze. \n10 second duration, 20 second cooldown. Crits deal 50% extra damage. \nFreeze stuns a target for 5 seconds with an 8 second cooldown."
+PERK.Description = "25% boost in RPM. Press Shift + E to enter a rage mode. 10 second duration, \n20 second cooldown. While active, gain 50% crit chance and crits builds up Freeze. \nFreeze stuns a target for 5 seconds with an 8 second cooldown."
 PERK.Icon = "materials/perks/decapitate.png"
 PERK.Params = {
     [1] = {value = 0.25, percent = true},
@@ -55,5 +55,13 @@ PERK.Hooks.Horde_OnPlayerCritical = function (ply, npc, bonus, hitgroup, dmginfo
     if ply:Horde_GetPerk("shinigami_3_2") and ply.Horde_MementoMori then
       npc:Horde_AddDebuffBuildup(HORDE.Status_Freeze, 1000, ply, dmginfo:GetDamagePosition())
    end
+end
+
+PERK.Hooks.M_Hook_Mult_RPM = function(wpn, data)
+    local ply = wpn:GetOwner()
+--	if wpn.ManualAction then return false end
+    if IsValid(ply) and ply:IsPlayer() and ply:Horde_GetPerk("shinigami_3_2") then
+        data.mult = (data.mult or 1) * 1.25
+    end
 end
 

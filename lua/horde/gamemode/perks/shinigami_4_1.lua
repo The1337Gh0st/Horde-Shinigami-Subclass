@@ -1,5 +1,5 @@
 PERK.PrintName = "Harvest"
-PERK.Description = "Cold damage ignores enemy Cold damage resistance. \nKilling elites releases a damaging mist. \nMist deals damage equal to quadruple the max health of the target."
+PERK.Description = "Kills release a damaging mist. \nMist deals damage equal to quintuple the max health of the target + 100."
 PERK.Icon = "materials/perks/coup.png"
 PERK.Params = {
     [1] = {value = 10},
@@ -15,25 +15,20 @@ PERK.Params = {
 
 PERK.Hooks = {}
 
-PERK.Hooks.Horde_OnPlayerDamagePost = function (ply, npc, bonus, hitgroup, dmginfo)
-    if not ply:Horde_GetPerk("shinigami_4_1")  then return end
-	if HORDE:IsColdDamage(dmginfo) then
-    dmginfo:SetDamageType(DMG_DIRECT)
-	end
-end
-
 PERK.Hooks.Horde_OnEnemyKilled = function(victim, killer, inflictor)
     if not victim:IsValid() or not victim:IsNPC() or not killer:IsPlayer() then return end
     if not killer:Horde_GetPerk("shinigami_4_1") then return end
-	if not victim:GetVar("is_elite") then return end
+	--if not victim:GetVar("is_elite") then return end
     if inflictor:IsNPC() then return end -- Prevent infinite chains
-        local dmg = victim:GetMaxHealth() * 4
-        local rad = 150
-        local e = EffectData()
-    local effectdata = EffectData()
+	local p = math.random()
+        local dmg = (victim:GetMaxHealth() * 5) + 100
+        local rad = 200
+       local e = EffectData()
+   local effectdata = EffectData()
     effectdata:SetOrigin(victim:GetPos())
-    effectdata:SetRadius(150)
+   effectdata:SetRadius(200)
     util.Effect("heal_mist", effectdata)
     victim:EmitSound("arccw_go/smokegrenade/smoke_emit.wav", 90, 100, 1, CHAN_AUTO)
       util.BlastDamage(victim, killer, victim:GetPos(), rad, dmg)
-end
+	  end
+	  
